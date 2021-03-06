@@ -22,7 +22,6 @@ jobs:
       - name: Setup Edge
         if: ${{ matrix.gradle-task == 'edge_headless' }}
         uses: browser-actions/setup-edge@latest
-        run: (Get-Item (Get-Command msedge).Source).VersionInfo.ProductVersion
       - name: Setup Firefox
         if: ${{ matrix.gradle-task != 'check' }}
         run: |
