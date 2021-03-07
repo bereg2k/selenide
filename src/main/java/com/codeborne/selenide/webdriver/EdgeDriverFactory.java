@@ -17,10 +17,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static java.util.Arrays.asList;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 
 @ParametersAreNonnullByDefault
@@ -75,11 +76,27 @@ public class EdgeDriverFactory extends AbstractDriverFactory {
 
     if (isChromiumBased() && config.headless()) {
       Map<String, Object> edgeOptions = new HashMap<>();
-      edgeOptions.put("args", asList("--headless", "--disable-gpu"));
+      edgeOptions.put("args", createEdgeArguments(config));
       options.setCapability("ms:edgeOptions", edgeOptions);
     }
     return options;
   }
+
+  @CheckReturnValue
+  @Nonnull
+  protected List<String> createEdgeArguments(Config config) {
+    List<String> arguments = new ArrayList<>();
+    if (config.headless()) {
+      arguments.add("--headless");
+      arguments.add("--disable-gpu");
+    }
+
+    arguments.add("--proxy-bypass-list=<-loopback>");
+    arguments.add("--disable-dev-shm-usage");
+    arguments.add("--no-sandbox");
+    return arguments;
+  }
+
 
   @CheckReturnValue
   private boolean isChromiumBased() {
